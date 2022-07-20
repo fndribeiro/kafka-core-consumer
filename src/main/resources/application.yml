@@ -1,0 +1,17 @@
+server:
+   port: 8080
+   
+spring:
+   kafka:
+      bootstrap-servers: ${CLOUDKARAFKA_SERVERS}
+      properties:
+         security:
+            protocol: SASL_SSL
+         sasl:
+            mechanism: SCRAM-SHA-256
+            jaas:
+               config: org.apache.kafka.common.security.scram.ScramLoginModule required username="${CLOUDKARAFKA_USERNAME}" password="${CLOUDKARAFKA_PASSWORD}";
+      consumer:
+         group-id: ${CLOUDKARAFKA_USERNAME}-consumers
+         
+      
