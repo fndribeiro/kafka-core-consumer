@@ -13,5 +13,6 @@ spring:
                config: org.apache.kafka.common.security.scram.ScramLoginModule required username="${CLOUDKARAFKA_USERNAME}" password="${CLOUDKARAFKA_PASSWORD}";
       consumer:
          group-id: ${CLOUDKARAFKA_USERNAME}-consumers
+         # auto-offset-reset: earliest (read all messages created from offset 0) // default is latest (read only new messages after consumer is created)
          
       
