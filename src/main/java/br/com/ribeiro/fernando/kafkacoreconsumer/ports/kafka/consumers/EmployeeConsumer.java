@@ -2,6 +2,8 @@ package br.com.ribeiro.fernando.kafkacoreconsumer.ports.kafka.consumers;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,6 +22,8 @@ import br.com.ribeiro.fernando.kafkacoreconsumer.ports.spring.configs.BeanNames;
 @Component
 public class EmployeeConsumer {
 
+	private final Logger logger = LoggerFactory.getLogger(EmployeeConsumer.class);
+	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	// If no unique value is present, create class with a combination of values and use as key.
@@ -31,19 +35,20 @@ public class EmployeeConsumer {
 		this.cache = cache;
 	}
 
-	@KafkaListener(topics = KafkaTopics.EMPLOYEE, groupId = ConsumerGroups.DASHBOARD, containerFactory = BeanNames.EMPLOYEE_TYPE_CONTAINER_FACTORY)
+	@KafkaListener(
+			topics = KafkaTopics.EMPLOYEE, 
+			groupId = ConsumerGroups.DASHBOARD, // will override properties if set
+			containerFactory = BeanNames.EMPLOYEE_TYPE_CONTAINER_FACTORY,
+			errorHandler = BeanNames.EMPLOYEE_ERROR_HANDLER)
 	public void listen(String message) throws JsonMappingException, JsonProcessingException {
 		
 		Employee employee = objectMapper.readValue(message, Employee.class);
 		
 		if (existsInCache(employee.getEmail())) {
-			
-			System.out.println("Blocking transaction. Email already exists in cache.");
-			
-			return;
+			throw new IllegalArgumentException("Email already exists in cache.");
 		}
 		
-		System.out.println("Processing: " + employee);
+		logger.info("Processing: ", employee.toString());
 		
 		cache.put(employee.getEmail(), true);
 		

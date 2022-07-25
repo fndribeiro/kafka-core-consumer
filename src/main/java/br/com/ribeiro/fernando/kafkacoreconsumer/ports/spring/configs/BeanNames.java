@@ -4,5 +4,6 @@ public class BeanNames {
 
 	public static final String EMPLOYEE_TYPE_CONTAINER_FACTORY = "employeeTypeContainerFactory";
 	public static final String EMPLOYEE_CACHE = "employeeCache";
+	public static final String EMPLOYEE_ERROR_HANDLER = "employeeErrorHandler";
 	
 }
