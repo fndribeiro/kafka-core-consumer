@@ -14,5 +14,8 @@ spring:
       consumer:
          group-id: ${CLOUDKARAFKA_USERNAME}-consumers
          # auto-offset-reset: earliest (read all messages created from offset 0) // default is latest (read only new messages after consumer is created)
-         
+      producer:
+         properties:
+            enable:
+               idempotence: false 
       

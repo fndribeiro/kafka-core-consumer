@@ -34,12 +34,13 @@ public class EmployeeConsumer {
 	public EmployeeConsumer(Cache<String, Boolean> cache) {
 		this.cache = cache;
 	}
-
+	
+	// @RetryableTopic() non blocking retry
 	@KafkaListener(
+			id = ConsumerIds.EMPLOYEE_CONSUMER,
 			topics = KafkaTopics.EMPLOYEE, 
 			groupId = ConsumerGroups.DASHBOARD, // will override properties if set
-			containerFactory = BeanNames.EMPLOYEE_TYPE_CONTAINER_FACTORY,
-			errorHandler = BeanNames.EMPLOYEE_ERROR_HANDLER)
+			containerFactory = BeanNames.EMPLOYEE_CONTAINER_FACTORY)
 	public void listen(String message) throws JsonMappingException, JsonProcessingException {
 		
 		Employee employee = objectMapper.readValue(message, Employee.class);
@@ -48,7 +49,7 @@ public class EmployeeConsumer {
 			throw new IllegalArgumentException("Email already exists in cache.");
 		}
 		
-		logger.info("Processing: ", employee.toString());
+		logger.info("Processing: {}", employee);
 		
 		cache.put(employee.getEmail(), true);
 		
