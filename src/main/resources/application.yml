@@ -2,6 +2,7 @@ server:
    port: 8080
    
 spring:
+
    kafka:
       bootstrap-servers: ${CLOUDKARAFKA_SERVERS}
       properties:
@@ -19,3 +20,15 @@ spring:
             enable:
                idempotence: false 
       
+   datasource:
+      url: ${DB_POSTGRES_URL}
+      username: ${DB_POSTGRES_USERNAME}
+      password: ${DB_POSTGRES_PASSWORD}
+      
+   jpa:
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+            ddl-auto: update
+         
